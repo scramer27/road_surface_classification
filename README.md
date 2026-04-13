@@ -10,6 +10,16 @@ Motivation and Question:
 Monitoring roads for quality in Vermont is tedious when done manually, and road work struggles to keep pace with the damage caused by winter weather conditions. However, due to the near omnipresence of smartphones, we essentially have a network of mobile sensors already deployed in the field. As a Vermont driver, the potential to create a passive monitoring system using smartphone accelerometers is appealing, as being able to more easily identify and locate potholes with road data could translate to localities having an improved ability to allocate resources to repair roads. Using a self-collected dataset from a 3-axis accelerometer and GPS data from smartphones driven over roads around the town of Middlebury, we will investigate the question: Can a machine learning model be used to reliably classify road surfaces between smooth roads, speed bumps, and potholes? Achieving successful classification will provide better infrastructure data to the municipalities that maintain it.
 
 Planned Deliverables:
+Full Success:
+	Python Package that includes a full data pipeline that combines CSV and GPS GPX data into a labeled dataset.
+	1D CNN model that is trained to distinguish the three road classes we have defined/
+	Jupyter Notebook that cleanly demonstrates the translation from the raw data we took on the road and the analytical steps we took afterward.
+	Map that has three road surface types classified and overlaid over the Middlebury road network.
+Partial Success:
+	Completed data collection and pipeline.
+	A PyTorch model that demonstrates some training and performance metrics for classifying the three road types.
+	Analysis of accelerometer data in Jupyter notebook. 
+
 
 Resources Requried:
 
