@@ -12,7 +12,7 @@ time_zone_diff   = int(sys.argv[4]) if len(sys.argv) > 4 else -4
 # get accel start time from filename
 match = re.search(r'(\d{4}-\d{2}-\d{2})_(\d{2}-\d{2}-\d{2})', acceleration_file)
 date_str, time_str = match.group(1), match.group(2).replace('-', ':')
-accel_end = datetime.datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
+accel_end = datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
 accel_end = accel_end.replace(tzinfo=timezone.utc) - timedelta(hours=time_zone_diff)
 
 accel = pd.read_csv(acceleration_file)
