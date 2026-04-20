@@ -6,7 +6,7 @@
 #   SPACE  start/stop collection window
 #   p      pothole
 #   s      speed bump
-#   n      normal road (optional baseline)
+#   n      normal road (optional baseline), will determine later if needed
 #   z      undo last event
 #   h      show keys
 #   q      quit and save
