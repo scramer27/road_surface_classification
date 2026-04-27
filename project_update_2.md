@@ -1,5 +1,6 @@
-Your group members: Sam Cramer
-The URL of your GitHub repository so that we can check it out.
-The “thing that works” this week.
-A brief description of how that thing fits into the bigger picture of the project.
-A brief description of how you contributed to that thing.
+1. Your group members: Sam Cramer
+2. https://github.com/scramer27/road_surface_classification/
+3. Fully synchronized data and preprocessing that uses raw accelerometer, GPS, and label data from previous test drive and
+   three new test drives (each around 30 minutes) and produces 6 different labeled training windows that are ready to be   used in a 1D CNN. One unsupervised data and 6 supervised data preprocessing have been completed. Plots showing the "promissingness" of this study are in the repo too.
+4. The pipeline is highly important to this project. Not only do we need to synchronize the three data sources, but we also need to remove any noise at the start and end of recordings, ensure shared timeframe, remove cross-class labels that may cause data contamination, and account for human reaction time for creating labels. Pothole labels are asymetric, so that we prioritize times before a button is pressed in order to have the best chance at capturing acceleration data for a window, rather than one time. Normal roads were given a symmetric window, as less reaction lag is apparent by definition. The output of 6 supervised CSVs and one unsupervised CSV can allow for great visualizations of windows, demonstrating valid acceleration spikes as a general trend. Furthermore, deciding to drop speedbumps due to limited data allows us to prevent overfitting.
+5. As the sole group member, I completed all tasks here. I collected three more datasets (with the help of a volunteer to label events) using Physics Toolbox, Open GPX Tracker, and keyboard labels from the labeler.py script. I then thought deliberately about the pipeline and used three varying data sources to create cleaned data windows for events. All code is committed, however, the csvs, being far too large, are not commited, but can be generated easily using the data provided and a simple one-line command in terminal.
