@@ -11,25 +11,31 @@ def confusion_matrix(y_pred, y_true):
     return counts
 
 def expected_cost(confusion_matrix, cost_matrix):
+    # calulates average penalty of the confusion matrix, based on our cost matrix
     m = confusion_matrix.sum().item()
     return (confusion_matrix * cost_matrix.to(confusion_matrix.device)).sum().item() / m
 
 def accuracy(y_pred, y_true):
+    # finds percentage of correct labels
     return (y_pred == y_true).float().mean().item()
 
 def precision(confusion_matrix):
+    # percentage of true positives over FP and TP
     return confusion_matrix[1, 1] / (confusion_matrix[0, 1] + confusion_matrix[1, 1] + 1e-8)
 
 def recall(confusion_matrix):
+    # percentage of true positives over FN and TP
     return confusion_matrix[1, 1] / (confusion_matrix[1, 0] + confusion_matrix[1, 1] + 1e-8)
 
 def f1_score(precision, recall):
+    # function to include precision and recall
     return 2 * (precision * recall) / (precision + recall + 1e-8)
 
 # logistic regression + 1D CNN helpers
 def costs_and_accuracies(q_val, y_val, C, T): # adapted from lecture 8
     costs = []
     accuracies = []
+    # loop over a variety of thresolds
     for t in T:
         y_pred = (q_val >= t).int()
 
@@ -41,6 +47,7 @@ def costs_and_accuracies(q_val, y_val, C, T): # adapted from lecture 8
     return costs, accuracies
 
 def binary_cross_entropy(q, y): # adapted from lecture 6
+    # standard loss function (log loss) for binary classifiers
     return -(y * torch.log(q + 1e-8) + (1 - y) * torch.log(1 - q + 1e-8)).mean()
 
 def engineer_features(samples):
@@ -54,10 +61,12 @@ def engineer_features(samples):
     return features
 
 def flatten_window(samples):
+    # makes the windows into a 1d vector
     return samples.reshape(-1)
 
 # helper for 1D CNN
 def evaluate(model, loader, cost_matrix):
+    # uses the dataloader to get all the metrics that are necessary
     model.eval()
     all_preds, all_labels = [], []
     with torch.no_grad():
