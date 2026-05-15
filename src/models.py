@@ -3,23 +3,26 @@ import torch.nn as nn
 import numpy as np
 from torch.utils.data import Dataset
 
+# data formatting constants
 ACCELS = ['ax', 'ay', 'az', 'atotal']
 CLASSES = ['NORMAL', 'POTHOLE']
 
 class LogisticModel: # binary classification (sigmoid)
+    # simple model from earlier in the semester (binary output)
     def __init__(self, n_features, device):
         self.w = torch.zeros(n_features, 1, requires_grad=True, device=device)
 
     def forward(self, X): # sigmoid forward function
-        return 1 / (1 + torch.exp(-X @ self.w))
+        return torch.sigmoid(X @ self.w)
     
 class RoadSurfaceDataset(Dataset):
+    # helps handle our loading of datasets, and also augmenting the acceleration windows
     def __init__(self, df, window_length, device, augment=True):
         self.device = device
-        self.window_length = window_length
-        self.augment = augment
-        self.windows = []
-        self.labels  = []
+        self.window_length = window_length # window length depending on which configuration
+        self.augment = augment # boolean, augment or not
+        self.windows = [] # holds windows
+        self.labels  = [] # holds labels
 
         # precompute all windows like birdcall does for spectrograms
         for event, group in df.groupby('event_id'):
@@ -34,7 +37,7 @@ class RoadSurfaceDataset(Dataset):
         # make copies of window
         window = self.windows[idx].copy()
 
-        # create a random time shift
+        # create a random time shift, if augment is True
         if self.augment:
             max_shift = self.window_length // 10  # 35 for A, 25 for B, 15 for C
             shift = np.random.randint(-max_shift, max_shift)
@@ -48,24 +51,26 @@ class RoadSurfaceDataset(Dataset):
 
 # CNN class, adapted from lecture
 class RoadSurfaceCNN(nn.Module):
+    # used to hopefully pick up on the vibrations that can be seen in the data
     def __init__(self):
         super().__init__()
         self.pipeline = nn.Sequential(
-            nn.Conv1d(4, 16, kernel_size=3, padding=1),
+            nn.Conv1d(4, 16, kernel_size=3, padding=1), # layer 1
             nn.ReLU(),
             nn.MaxPool1d(2),
-            nn.Conv1d(16, 32, kernel_size=3, padding=1),
+            nn.Conv1d(16, 32, kernel_size=3, padding=1), # layer 2
             nn.ReLU(),
             nn.MaxPool1d(2),
-            nn.Conv1d(32, 64, kernel_size=3, padding=1),
+            nn.Conv1d(32, 64, kernel_size=3, padding=1), # layer 3
             nn.ReLU(),
             nn.MaxPool1d(2),
-            nn.Conv1d(64, 128, kernel_size=3, padding=1),
+            nn.Conv1d(64, 128, kernel_size=3, padding=1), # layer 4
             nn.ReLU(),
             nn.MaxPool1d(2),
-            nn.Flatten(),
-            nn.LazyLinear(1)
+            nn.Flatten(), # flatten
+            nn.LazyLinear(1) # use lazy linear, to avoid having to calculate input size
         )
 
     def forward(self, x):
+        # squash output to be between 0 and 1
         return torch.sigmoid(self.pipeline(x))
