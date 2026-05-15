@@ -9,13 +9,14 @@ WINDOW_POTHOLE   = 2.5  # seconds
 WINDOW_SPEEDBUMP = 3.5  # seconds
 WINDOW_NORMAL    = 5.0  # seconds
 
-def now_utc(): # find current time
+def now_utc(): # find current time to stay consistent with other data taking
     return datetime.now(timezone.utc)
 
 def format_time(dt): # format the time
     return dt.strftime("%H:%M:%S")
 
 def get_key(): # from https://stackoverflow.com/questions/510357/how-to-read-a-single-character-from-the-user
+    # reads key inputs (w/o hitting enter)
     fd = sys.stdin.fileno()
     old = termios.tcgetattr(fd)
     try:
@@ -24,52 +25,54 @@ def get_key(): # from https://stackoverflow.com/questions/510357/how-to-read-a-s
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
-def log(msg):
+def log(msg): # prints time to the terminal, with the message
     print(f"  [{format_time(now_utc())}] {msg}")
 
-def print_keys(): # helper function for user
+def print_keys(): # helper function for user (menu output)
     print()
-    print("  SPACE  start/stop collection window")
+    print("  space  start/stop collection window")
     print("  p      pothole")
     print("  s      speed bump")
     print("  n      normal road")
     print("  z      undo last event")
-    print("  h      show keys")
+    print("  h      show keys to press")
     print("  q      quit and save")
     print()
 
 def main():
     events = [] # array of events collected
-    collecting = False
+    collecting = False # toggled by space
 
+    # create new test folders automatically (for future tests)
     data_dir = 'data/input_data'
     os.makedirs(data_dir, exist_ok=True)
-    existing = sorted([d for d in os.listdir(data_dir) if d.startswith('test_')])
-    next_num = len(existing) + 1
-    test_dir = os.path.join(data_dir, f'test_{next_num}')
+    existing = sorted([d for d in os.listdir(data_dir) if d.startswith('test_')]) # finds number of tests already existing
+    next_num = len(existing) + 1 # increment number of tests
+    test_dir = os.path.join(data_dir, f'test_{next_num}') 
     os.makedirs(test_dir, exist_ok=True)
 
-    output_file = os.path.join(test_dir, f"labels_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv")
+    output_file = os.path.join(test_dir, f"labels_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv") # adds time to output file
 
+    # creates starting message for user
     print(f"\nroad surface labeler")
     print(f"output: {output_file}")
     print_keys()
 
-    while True:
+    while True: # continual searching for keys until the loop is broken by manual interrupt
         key = get_key()
         t = now_utc()
 
-        if key == ' ':
-            if not collecting:
+        if key == ' ': # space bar trigger
+            if not collecting: # turns collection on
                 collecting = True
                 events.append({"event_type": "COLLECTION_START", "wall_clock_time": t, "window_sec": ""})
                 log("collection start")
-            else:
+            else: # turns collection off
                 collecting = False
                 events.append({"event_type": "COLLECTION_STOP", "wall_clock_time": t, "window_sec": ""})
                 log("collection stop")
 
-        elif key in ('p', 's', 'n'):
+        elif key in ('p', 's', 'n'): # outputs to user when keystroke happens not during collection time
             if not collecting:
                 log("not in collection window, ignored")
                 continue
@@ -85,23 +88,24 @@ def main():
                 log(f"normal  ({WINDOW_NORMAL}s)")
 
         elif key == 'z': # remove last event
-            if events:
-                removed = events.pop()
+            if events: # if there are events already recorded
+                removed = events.pop() # remove from top of the stack
                 log(f"undo -- removed {removed['event_type']} at {format_time(removed['wall_clock_time'])}")
                 if removed["event_type"] == "COLLECTION_START": # undo collection
                     collecting = False
                 elif removed["event_type"] == "COLLECTION_STOP": # restart collection
                     collecting = True
-            else:
+            else: # otherwise there's no events in the stack
                 log("nothing to undo")
 
         elif key == 'h': # user asks for help
             print_keys()
 
-        elif key == 'q': # end data takin
+        elif key == 'q': # end data taking
             log(f"saving {len(events)} events to {output_file}")
             break
-
+    
+    # save the output file to appropriate location (data directory)
     with open(output_file, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=["event_type", "wall_clock_time", "window_sec"])
         writer.writeheader()

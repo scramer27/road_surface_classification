@@ -1,10 +1,9 @@
 import re
 import os
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
-
 import gpxpy
 import pandas as pd
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
 
 # constants
 TRIM_SEC = 5.0  # remove beginning and ending 5 sec
@@ -50,7 +49,7 @@ def load_labels(path):
     df['wall_clock'] = pd.to_datetime(df['wall_clock_time'], utc=True).astype('datetime64[us, UTC]')
     return df.sort_values('wall_clock').reset_index(drop=True) # create new indices
 
-# load from gpx file (from gpx reader file)
+# load from gpx file (adapted from original gpx reader file)
 def load_gps(path):
     with open(path, 'r') as f:
         gpx = gpxpy.parse(f)
@@ -58,14 +57,14 @@ def load_gps(path):
     for track in gpx.tracks:
         for segment in track.segments:
             for pt in segment.points:
-                rows.append({
-                    'wall_clock': pt.time,
+                rows.append({ # add local time, X,Y,Z location (in terms of lat, long, meters of elevation)
+                    'wall_clock': pt.time, 
                     'lat':        pt.latitude,
                     'lon':        pt.longitude,
                     'elevation':  pt.elevation,
                 })
     df = pd.DataFrame(rows)
-    df['wall_clock'] = pd.to_datetime(df['wall_clock'], utc=True).astype('datetime64[us, UTC]')
+    df['wall_clock'] = pd.to_datetime(df['wall_clock'], utc=True).astype('datetime64[us, UTC]') 
     return df.sort_values('wall_clock').reset_index(drop=True) # create new indices
 
 # process the data

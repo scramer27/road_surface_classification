@@ -22,7 +22,7 @@ for csv_path in supervised_files:
         event_ids = list(data[data['label'] == road_type]['event_id'].unique()) # makes a set
         random_ids = random.sample(event_ids, min(NUM_WINDOWS, len(event_ids))) # randomly choose IDs
 
-        # asked gemini to create plots
+        # asked gemini to create code for the subplots
         fig, axes = plt.subplots(len(random_ids), 4, figsize=(14, 2.5 * len(random_ids)))
         fig.suptitle(f"{road_type} windows — config {cfg_name}  (red = label press)", fontsize=12)
 
