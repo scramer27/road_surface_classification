@@ -234,4 +234,4 @@ if __name__ == "__main__":
             # explains how many events dropped during cleaning process for each configuration
             print(f"  {cfg}  dropped={len(events)-len(cleaned_data)}  kept={cleaned_data['event_type'].value_counts().to_dict()}")
 
-    print(f"\n output files created")
+    print("\n output files created")
