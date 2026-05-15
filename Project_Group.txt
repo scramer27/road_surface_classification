@@ -1,0 +1,25 @@
+Project Group
+Who are the members of your project group?
+
+Sam Cramer
+
+Please remember that project groups of size 1 or 4 are often fine but require permission from Phil.
+
+Group Name
+Please consult with your group members on an awesome, fun name for your group.
+
+Reckless Driving for Science
+
+Project Topic
+What is the broad topic on which you’ll be working on? Does it correspond to one person’s pitch, or is it a new topic
+ that you all came up with together?
+
+I will be working on using my own three-axis accelerometer data to develop a model classify different driving behaviors, 
+such as hard breaking, sharp turns, smooth accelerations, and steady forward driving.
+
+Why Are You Excited??
+Why are you, personally, excited to be working on this project? What are you hoping to achieve when you’re done?
+
+I am excited for this project, as I will have the opportunity to combine hardware and driving, which are two of my
+ greatest interests, with ML, and I be able to have an end product that could be extended to be useable by myself
+ and others on as a smartphone app, or create fun ways of accessing the safety of different drivers with a safety score.

@@ -1,0 +1,5 @@
+# Group Members: Samuel Cramer
+# Repo URL: https://github.com/scramer27/road_surface_classification
+# This week, I have collected some initial driving data from Middlebury College and the surrounding Addison County area, completing my objective of a 20km drive by week 9. I used a synchronization pipeline to match up acceleration, labels, and gps location up, after having used three devices to collect data. I also created an event labeler that could be run in my termianal to record events.
+# This is a major step in the datawrangling process, as besides collecting more data and creating robust event windows, the bulk of my remaining work that I will have to do is work on producing a 1D CNN model and a comparison least squares regression model, followed by a map visiualization. 
+# I essentially did all of this work, save for my volunteer who's phone I used to collect GPS data and who's help I used to press keyboard inputs as I couldn't have encoded event labels while driving.
